@@ -1,1 +1,1 @@
-# crypto_trend_analysis
+# Crypto trend analysis
