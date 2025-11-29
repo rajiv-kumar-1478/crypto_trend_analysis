@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Crypto Sentiment Analysis Project</title>
+    <link rel="stylesheet" href="index.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    
+</head>
+<body>
+
+<main class="main-content">
+    <div class="project">
+        <div class="project-content">
+            <h2><a href="project2.html">Crypto Sentiment vs Market Movement</a></h2>
+            <p>This project explores the relationship between cryptocurrency news sentiment and market behavior, aiming to answer a compelling question: <em>Can news sentiment help forecast short-term price movements in the crypto market?</em>
+
+            <br><br><strong>Objectives:</strong><br>
+            - Scrape real-time and historical cryptocurrency news from Cointelegraph, Coindesk, CryptoPanic, Bitcoinist, and NewsAPI.<br>
+            - Collect historical daily price data for cryptocurrencies like Bitcoin, Ethereum, Litecoin, Avalanche etc. using the <code>yfinance</code> library.<br>
+            - Use the TextBlob library in Python to perform sentiment analysis on news headlines.<br>
+            - Correlate daily sentiment polarity with next-day price movements to assess predictive relationships.<br>
+            - Visualize sentiment trends and price impacts using clear, data-rich graphs.
+
+            <br><br><strong>Methods:</strong><br>
+            Each headline is preprocessed and passed through TextBlob to calculate a sentiment polarity score ranging from -1 (negative) to +1 (positive). These scores are aggregated on a daily basis. The sentiment data is then aligned with corresponding cryptocurrency price data, and a lag analysis is performed to observe whether positive sentiment leads to next-day price increases. Correlation coefficients and directional accuracy metrics are computed to evaluate predictive strength. To complement these numerical scores, a WordCloud was also generated using the most frequent terms in cryptocurrency headlines. This visualization helps identify dominant themes or keywords influencing sentiment patterns.
+            <br><br><strong>Tools Used:</strong><br>
+            - Python, BeautifulSoup, Requests ,TextBlob, yfinance<br>
+            - Pandas, Flask, Chart.js, WordCloud<br>
+            - Jupyter Notebook for exploratory analysis and visualization
+
+            <br><br><h3>📊 Correlation & Accuracy Metrics</h3>
+            <p><strong>Accuracy:</strong> To evaluate performance, we computed both the Pearson correlation between sentiment and next-day price change, and the directional accuracy (i.e., how often the sentiment correctly predicted the price movement direction). The results for key cryptocurrencies are shown below:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cryptocurrency</th>
+                        <th>Correlation</th>
+                        <th>Directional Accuracy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Avalanche (AVAX)</td><td style="color: green;">0.0999 &#9650;</td><td>58.82%</td></tr>
+                    <tr><td>Bitcoin (BTC)</td><td style="color: green;">0.0007 &#9650;</td><td>89.96%</td></tr>
+                    <tr><td>Chainlink (LINK)</td><td style="color: green;">0.0527 &#9650;</td><td>66.96%</td></tr>
+                    <tr><td>Ethereum (ETH)</td><td style="color: green;">0.0076 &#9650;</td><td>80.81%</td></tr>
+                    <tr><td>Polkadot (DOT)</td><td style="color: red;">-0.0277 &#9660;</td><td>68.23%</td></tr>
+                    <tr><td>Solana (SOL)</td><td style="color: green;">0.0338 &#9650;</td><td>73.1%</td></tr>
+                    <tr><td>Dogecoin (DOGE)</td><td style="color: green;">0.0586 &#9650;</td><td>74%</td></tr>
+                    <tr><td>Tether (USDT)</td><td style="color: red;">-0.0590 &#9660;</td><td>55.53%</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="imgp1">
+            <a href="project2.html">
+                <img src="project2.jpg" alt="Crypto Sentiment Project Image" class="project-img">
+            </a>
+        </div>
+    </div>
+
+    <!--  Team Members Section -->
+    <section class="team">
+        <h3><i class="fas fa-users"></i> Team Members</h3>
+        <ul>
+            <li> Rajiv Kumar – Data Collection and Web Scraping</li>
+            <li> Rahul Kumar – Backend Data Processing and Sentiment Analysis</li>
+            <li> Himanshu Kumar – Data Visualization and Report Writing</li>
+        </ul>
+    </section>
+
+    <!--  Challenges Faced -->
+    <section class="challenges">
+        <h3><i class="fas fa-bug"></i> Challenges Faced</h3>
+        <p>Scraping news data from multiple sources posed several challenges, especially with dynamically loaded websites that required handling JavaScript-rendered content or embedded APIs. Standardizing and cleaning headlines across different formats and structures added further complexity. A further challenge arose when visualizing the sentiment and price data together, as the fluctuating nature of both datasets often led to misalignments and difficulties in establishing clear trends for comparative analysis.</p>
+    </section>
+</main>
+
+</body>
+</html>

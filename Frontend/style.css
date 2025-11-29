@@ -1,0 +1,218 @@
+/* ---- Base Reset ---- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  color: #f0f0f0;
+  line-height: 1.5;
+}
+
+/* ---- Dashboard Container ---- */
+.dashboard {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* ---- Header + Controls ---- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.controls h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+.selectors {
+  display: flex;
+  gap: 1rem;
+}
+.selectors select {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: rgba(0,0,0,0.6);
+  color: #ffffff;
+  backdrop-filter: blur(6px);
+  font-size: 1rem;
+}
+
+/* ---- Grid Layouts ---- */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+.grid-1 {
+  grid-template-columns: 1fr;
+}
+
+/* ---- Card Design (for charts and containers) ---- */
+.card, .chart-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.2);
+  padding: 20px;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover, .chart-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+}
+.card h2, .chart-container h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+}
+
+/* ---- Headlines Lists ---- */
+.headline-list {
+  list-style: disc inside;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.headline-list li {
+  margin-bottom: 0.5rem;
+  color: #e0e0e0;
+}
+h2.positive {
+  color: #4fd1c5;
+}
+h2.negative {
+  color: #fc8181;
+}
+
+/* ---- Word Cloud Styling ---- */
+.wordcloud {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: linear-gradient(135deg, #2c3e50, #4c6e91, #3a4e7d);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6), inset 0 0 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.wordcloud::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.05), transparent 70%);
+  animation: rotateSpot 20s linear infinite;
+}
+.wordcloud:hover {
+  transform: scale(1.02);
+  animation: gradientShift 6s ease infinite, pulseShadow 5s ease-in-out infinite;
+}
+.wordcloud canvas {
+  border-radius: 1rem;
+}
+
+/* ---- Fullscreen Button ---- */
+.fullscreen-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #fbbf24;
+  color: #000;
+  border: none;
+  padding: 5px 8px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 10;
+  transform: scale(1);
+  transition: 0.3s ease;
+}
+.fullscreen-btn:hover {
+  background: #4fd1c5;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* ---- Scrollbar Customization ---- */
+.headline-list::-webkit-scrollbar {
+  width: 6px;
+}
+.headline-list::-webkit-scrollbar-thumb {
+  background-color: #4fd1c5;
+  border-radius: 10px;
+}
+.headline-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---- Chart.js Tooltip & Legend Styling ---- */
+.chartjs-tooltip {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+}
+.chartjs-tooltip-title {
+  color: #fbbf24 !important;
+}
+.chartjs-tooltip-body {
+  color: #e0e0e0 !important;
+}
+.chartjs-legend-item {
+  color: #ffffff !important;
+}
+
+/* ---- Animations ---- */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes rotateSpot {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes pulseShadow {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6), inset 0 0 60px rgba(0,0,0,0.5);
+  }
+  50% {
+    box-shadow: 0 12px 32px rgba(0,0,0,0.6), inset 0 0 90px rgba(0,0,0,0.5);
+  }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  .selectors {
+    flex-direction: column;
+  }
+}
+
+/* ---- Correlation Card ---- */
+/* 
+
+/* ---- Updated Chart Description Styling ---- */
+.card .chart-desc {
+  color: #fc8181;       /* coral-red for negative descriptions */
+  margin: 1.5rem 0;     /* 1.5rem top & bottom spacing */
+  font-size: 1rem;      /* adjust size as needed */
+  line-height: 1.6;     /* improve readability */
+}

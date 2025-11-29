@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Sentiment Dashboard</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- WordCloud2.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.2/wordcloud2.min.js"></script>
+
+  <style>
+    /* ---- Base Reset ---- */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Poppins',sans-serif;
+      background: linear-gradient(to right,#0f2027,#203a43,#2c5364);
+      color:#f0f0f0;
+      line-height:1.5;
+    }
+    .dashboard { max-width:1200px; margin:2rem auto; padding:0 1rem; }
+    .controls { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:2rem; }
+    .controls h1 { font-size:2rem; font-weight:600; display:flex; align-items:center; }
+    .selectors { display:flex; gap:1rem; }
+    .selectors select {
+      padding:0.5rem 1rem; border:none; border-radius:0.5rem;
+      background:rgba(0,0,0,0.6); color:#fff; backdrop-filter:blur(6px);
+      font-size:1rem;
+    }
+    .grid { display:grid; gap:1.5rem; margin-bottom:2rem; }
+    .grid-2 { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
+    .grid-3 { grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); }
+    .grid-1 { grid-template-columns:1fr; }
+    .card {
+      position:relative;
+      background:rgba(255,255,255,0.1); backdrop-filter:blur(10px);
+      border-radius:20px; box-shadow:0 8px 32px rgba(0,0,0,0.2);
+      padding:20px; transition:transform 0.3s ease,box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform:translateY(-5px); box-shadow:0 12px 32px rgba(0,0,0,0.4);
+    }
+    .card h2 { font-size:1.1rem; margin-bottom:0.75rem; color:#fff; display:flex; align-items:center; }
+    .headline-list { list-style:disc inside; max-height:180px; overflow-y:auto; }
+    .headline-list li { margin-bottom:0.5rem; color:#e0e0e0; }
+    h2.positive { color:#4fd1c5; }
+    h2.negative { color:#fc8181; }
+    .wordcloud {
+      position:relative; width:100%; height:300px;
+      background:linear-gradient(135deg,#2c3e50,#4c6e91);
+      border-radius:1rem; box-shadow:0 8px 24px rgba(0,0,0,0.6);
+      overflow:hidden; background-size:600% 600%;
+      animation:gradientAnimation 10s ease infinite;
+    }
+    @keyframes gradientAnimation {
+      0%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+      100%{background-position:0% 50%;}
+    }
+    .wordcloud canvas { border-radius:1rem; }
+    .fullscreen-btn {
+      position:absolute; top:10px; right:10px;
+      background:#fbbf24; color:#000;
+      border:none; padding:5px 8px; font-size:18px;
+      cursor:pointer; border-radius:5px; z-index:10;
+      transition:0.3s;
+    }
+    .fullscreen-btn:hover {
+      background:#4fd1c5; color:#fff; transform:scale(1.1);
+    }
+    @media(max-width:600px){ .selectors{ flex-direction:column;} }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Header -->
+    <header class="controls">
+      <h1><i class="fab fa-bitcoin" style="color:#fbbf24; margin-right:0.5rem;"></i>Crypto Sentiment Dashboard</h1>
+      <div class="selectors">
+        <select id="coinDropdown">
+          <option value="Avalanche">Avalanche (AVAX)</option>
+          <option value="Bitcoin">Bitcoin (BTC)</option>
+          <option value="Chainlink">Chainlink (LINK)</option>
+          <option value="Ethereum">Ethereum (ETH)</option>
+          <option value="Polkadot">Polkadot (DOT)</option>
+          <option value="Solana">Solana (SOL)</option>
+          <option value="doge">Doge </option>
+          <option value="usdt">USDT </option>
+        </select>
+        
+        <select id="daysDropdown">
+          <option value="7">Last 7 Days</option>
+          <option value="15">Last 15 Days</option>
+          <option value="30">Last 30 Days</option>
+          <option value="90">Last 3 Months</option>
+          <option value="180">Last 6 Months</option>
+          <option value="365">Last 1 Year</option>
+          <option value="730">Last 2 Years</option>
+          <option value="1095">Last 3 Years</option>
+          <option value="2555">Last 7 Years</option>
+          <option value="5110">Last 14 Years</option>
+        </select>
+      </div>
+      
+      <div class="card correlation-card">
+        <h3>Analysis</h3>
+        <p id="correlation">Correlation: N/A</p>
+        <p id="directionalAccuracy">Directional Accuracy: N/A</p>
+      </div>
+      
+    </header>
+
+    <!-- Top Row -->
+    <div class="grid grid-2">
+      <div class="card chart-container">
+        <h2><i class="fas fa-chart-line" style="color:#4fd1c5; margin-right:0.5rem;"></i>Sentiment Score Over Time</h2>
+        <canvas id="sentimentLineChart"></canvas>
+        <button class="fullscreen-btn" data-target="sentimentLineChart">⛶</button>
+        <p class="chart-desc">This line chart shows the daily average sentiment score for the selected cryptocurrency over the chosen time range, highlighting market mood trends.</p>
+      </div>
+
+      <div class="card chart-container">
+        <h2><i class="fas fa-chart-bar" style="color:#4fd1c5; margin-right:0.5rem;"></i>Daily Sentiment Breakdown</h2>
+        <canvas id="sentimentBarChart"></canvas>
+        <button class="fullscreen-btn" data-target="sentimentBarChart">⛶</button>
+        <p class="chart-desc">This stacked bar chart displays the number of positive, negative, and neutral posts each day, offering a clear view of sentiment distribution.</p>
+      </div>
+    </div>
+
+    <!-- Middle Row -->
+    <div class="grid grid-3">
+      <div class="card">
+        <h2 class="positive"><i class="fas fa-smile" style="color:#4fd1c5; margin-right:0.5rem;"></i>Top 5 Positive Headlines</h2>
+        <ul id="topPositive" class="headline-list"></ul>
+        <p class="chart-desc" style="color: #4fd1c5; margin-top: 3rem;">
+          Here are the top five posts with the highest positive sentiment, giving insight into optimistic market commentary.
+        </p>
+      </div>
+      <div class="card">
+        <h2 class="negative"><i class="fas fa-frown" style="color:#fc8181; margin-right:0.5rem;"></i>Top 5 Negative Headlines</h2>
+        <ul id="topNegative" class="headline-list"></ul>
+        <p class="chart-desc" style="color: #fc8181; margin-top: 3rem;">
+          These are the top five posts with the strongest negative sentiment, highlighting key concerns or pessimistic views.
+        </p>
+        
+
+      </div>
+      <div class="card chart-container">
+        <h2><i class="fas fa-cloud" style="color:#4fd1c5; margin-right:0.5rem;"></i>Sentiment Word Cloud</h2>
+        <div id="wordcloud" class="wordcloud"></div>
+        <button class="fullscreen-btn" data-target="wordcloud">⛶</button>
+        <p class="chart-desc" style="color: #4fd1c5; margin-top: 3rem;">
+          The word cloud visualizes the most frequent terms from recent headlines, with size indicating frequency.
+        </p>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="grid grid-1">
+      <div class="card chart-container">
+        <h2><i class="fas fa-chart-area" style="color:#4fd1c5; margin-right:0.5rem;"></i>Price vs Sentiment</h2>
+        <canvas id="sentimentOverlayChart"></canvas>
+        <button class="fullscreen-btn" data-target="sentimentOverlayChart">⛶</button>
+        <p class="chart-desc">Overlay chart comparing sentiment score against price movements to reveal possible correlations between mood and market action.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
